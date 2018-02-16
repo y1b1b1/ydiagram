@@ -6,3 +6,4 @@ Test in branch.
 Test in branch2.
 
 Change in master.
+Test2
