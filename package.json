@@ -1,0 +1,22 @@
+{
+  "name": "ydiagram",
+  "version": "1.0.0",
+  "description": "Make your diagram on web.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y1b1b1/ydiagram.git"
+  },
+  "author": "ybb_y1b1b1",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/y1b1b1/ydiagram/issues"
+  },
+  "homepage": "https://github.com/y1b1b1/ydiagram#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
