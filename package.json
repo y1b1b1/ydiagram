@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/y1b1b1/ydiagram#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6"
   }
 }
