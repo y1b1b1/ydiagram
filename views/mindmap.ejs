@@ -293,7 +293,7 @@
         model:myDiagram.model.toJson()
       },
       function(data,status){
-        alert("Data: " + data + "\nStatus: " + status);
+        //alert("Data: " + data + "\nStatus: " + status);
       });
   } 
   function load() {
@@ -304,7 +304,7 @@
     //   alert("Data: " + data + "\nStatus: " + status);
     // });
     $.getJSON("/GetDiagramModel?ID="+ID, function(json){
-      alert("JSON Data: ");
+      //alert("JSON Data: ");
       myDiagram.model = go.Model.fromJson(json);
     });
   }
