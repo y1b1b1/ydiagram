@@ -1,2 +1,31 @@
-<p>welecome <strong> <%=title%> </strong>, 22222欢迎你再次登录<a href="/out"></a></p>
-<p>ssssssssssss</p>
+<html>
+<body>
+<p>欢迎<%=title%>你再次登录</p>
+<p>当前已有设计(<%=list.length%>)：<p>
+<!-- 显示用户当前保存的设计列表 -->
+<!-- 通过一个循环量构建对应的展示列表表格 -->
+<table border="1">
+  <tr>
+    <th>序号</th>
+    <th>名称</th>
+    <th>编辑</th>
+    <th>删除</th>
+  </tr>
+  <% for (var i=0;i<list.length;i++) { %>
+    <tr>
+      <th><%=i%></th>
+      <th><%=list[i].title%></th>
+      <th><a href="/editdiagram?ID=<%=list[i].id%>">编辑</a></th>
+      <th><a href="/deldiagram?ID=<%=list[i].id%>">删除</a></th>
+    </tr>
+  <% } %>
+</table>
+<form action="/do_newdiagram" method="post">
+    <fieldset>
+        <legend>新建MindMap</legend>
+        <p>名称: <input type="text" name="title"/></p>
+        <button>新建</button>
+    </fieldset>
+</form>
+</body>
+</html>
