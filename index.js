@@ -35,24 +35,25 @@ app.use('/', function (req, res, next) {
 });
 
 app.get('/', function (req, res) {
-  var diagram_list = diagrams.getDiagramList(req.session.name);
-  console.log(JSON.stringify(diagram_list));
-  console.log(diagram_list.length);
-  res.render('main.ejs', {title: req.session.name, list: diagram_list});
+  diagrams.getDiagramList(req.session.name, function(diagram_list) {
+    res.render('main.ejs', {title: req.session.name, list: diagram_list});
+  });
 });
 app.post('/do_login', function(req, res) {
   // 添加登录用户合法性判别
   //  登录管理系统
   //  登录管理系统能够自动集成在系统中，然后对访问进行有效性控制，如果当前访问需要用户进行登录
   //  那么自动跳转到登录页面进行登录，登录成功后，自动跳转到登录前的访问页面。
-  if (login.isValidUser(req.body.user, req.body.password) == false) {
-    res.render('login.ejs', {err: "Invalid username or password!"});
-  } else {
-    req.session.sign = true;
-    req.session.name = req.body.user;
-    // req.body.password
-    res.redirect('/');
-  } 
+  login.isValidUser(req.body.user, req.body.password, function(valid) {
+    if (valid == true) {
+      req.session.sign = true;
+      req.session.name = req.body.user;
+      // req.body.password
+      res.redirect('/');
+    } else {
+      res.render('login.ejs', {err: "Invalid username or password!"});
+    }
+  });
 });
 app.get('/editdiagram', function(req, res) {
   // 获取编辑设计的ID
@@ -67,27 +68,43 @@ app.get('/deldiagram', function(req, res) {
   // 获取对应设计的数据信息
   // 展示流图信息
   // res.send("edit .... " + req.query.ID);
-  diagrams.deldiagram(req.session.name, req.query.ID);
-  res.redirect('/');
+  diagrams.deldiagram(req.session.name, req.query.ID, function(result) {
+    if (result == false) {
+      res.send('Delete diagram fail!’);
+    } else {
+      res.redirect('/');
+    }
+  });
 });
 app.post('/do_newdiagram', function(req, res) {
   // 新建一个流图，记录title，产生新的ID
   // 先在设计列表中添加设计，然后跳转到对应的编辑页面进行编辑
-  var id = diagrams.newdiagram(req.session.name, req.body.title);
-  // 进入编辑页面
-  var edit_url = "/editdiagram?ID=" + id;
-  res.redirect(edit_url);
+  diagrams.newdiagram(req.session.name, req.body.title, function(id) {
+    if (id == -1) {
+      // 返回错误
+      res.send('Error: cannot create diagram!');
+    } else {
+      // 进入编辑页面
+      var edit_url = "/editdiagram?ID=" + id;
+      res.redirect(edit_url);
+    }
+  });
 });
 
 
 app.get('/GetDiagramModel', function(req, res) {
-  var model = diagrams.getmodel(req.query.ID);
-  res.send(JSON.stringify(model));
+  diagrams.getmodel(req.query.ID, function(model) {
+    res.send(model);
+  });
 });
 app.post('/SaveDiagramModel', function(req, res) {
-  var model = JSON.parse(req.body.model);
-  diagrams.savemodel(req.body.id, model);
-  res.send("0");
+  diagrams.savemodel(req.body.id, req.body.model, function(result) {
+    if (result == false) {
+      res.send('1');
+    } else {
+      res.send('0');
+    }
+  });
 });
 
 
