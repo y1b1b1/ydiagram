@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html  style="height:100%;">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mind Map</title>
@@ -47,11 +47,14 @@
             new go.Binding("fill", "brush")),
           $(go.TextBlock,
             { name: "TEXT",
-            minSize: new go.Size(30, 15),
-            editable: true,
+              minSize: new go.Size(30, 15),
+              editable: true,
+              font: "bold 15px Helvetica, bold Arial, sans-serif",
               margin: 8 },  // some room around the text
             // TextBlock.text is bound to Node.data.key
-            new go.Binding("text", "text"))
+            new go.Binding("text", "text").makeTwoWay(),
+            new go.Binding("scale", "scale").makeTwoWay(),
+            new go.Binding("font", "font").makeTwoWay())
         ),
         $(go.Shape, "LineH",
           {
@@ -310,9 +313,9 @@
   }
 </script>
 </head>
-<body onload="init()">
-<div id="sample">
-  <div id="myDiagramDiv" style="border: solid 1px black; width:100%; height:800px;"></div>
+<body onload="init()" style="height:100%;">
+<div id="sample" style="height:100%;">
+  <div id="myDiagramDiv" style="border: solid 1px black; width:100%; height:100%;"></div>
 
 </div>
 </body>

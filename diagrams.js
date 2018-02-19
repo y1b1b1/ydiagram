@@ -75,13 +75,14 @@ function deldiagram(user, id, callback) {
   });
 }
 function getmodel(id, callback) {
-  var sql = 'SELECT content FROM diagrams WHERE diagrams.diagramid=' + id;
+  var sql = 'SELECT content FROM diagrams WHERE diagramid=' + id;
   console.log(sql);
   db.QuerySql(sql, function(err, result) {
     if (err) {
       console.log(err);
       callback(JSON.stringify(model));
     } else {
+      console.log(result);
       if (result.length>0) {
         callback(result[0]['content']);
       } else {
@@ -92,7 +93,9 @@ function getmodel(id, callback) {
 }
 function savemodel(id, model_new, callback) {
   var sql = 'UPDATE diagrams SET content=\'' + model_new + '\' WHERE diagramid=' + id;
+  console.log(sql);
   db.QuerySql(sql, function(err, result) {
+    console.log("Save model finish!");
     if (err) {
       console.log(err);
       callback(false);

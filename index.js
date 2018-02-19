@@ -18,8 +18,9 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({extend: false }));
 app.use(express.static('public'));
+app.use(express.static('public/app/build'));
 
-
+/*
 app.use('/', function (req, res, next) {
   console.log("in use");
   if (req.method == "GET") {
@@ -33,6 +34,7 @@ app.use('/', function (req, res, next) {
     next();
   }
 });
+*/
 
 app.get('/', function (req, res) {
   diagrams.getDiagramList(req.session.name, function(diagram_list) {
@@ -70,7 +72,7 @@ app.get('/deldiagram', function(req, res) {
   // res.send("edit .... " + req.query.ID);
   diagrams.deldiagram(req.session.name, req.query.ID, function(result) {
     if (result == false) {
-      res.send('Delete diagram fail!’);
+      res.send('Delete diagram fail!');
     } else {
       res.redirect('/');
     }
@@ -106,6 +108,119 @@ app.post('/SaveDiagramModel', function(req, res) {
     }
   });
 });
+
+
+// App Request
+app.get('/app_login', function(req, res) {
+  var user = req.query.user;
+  var password = req.query.password;
+
+  console.log('get /app_login');
+  console.log(req.query);
+  login.isValidUser(user, password, function(valid) {
+    if (valid == true) {
+      req.session.sign = true;
+      req.session.name = req.body.user;
+      
+      var result = {result: true};
+      console.log(result);
+      res.send(JSON.stringify(result));
+    } else {
+      var result = {result: false, error: "Invalid user or password!"};
+      console.log(result);
+      res.send(JSON.stringify(result));
+    }
+  });
+});
+app.get('/app_signup', function(req, res) {
+  var user = req.query.user;
+  var password = req.query.password;
+
+  console.log('get /app_signup');
+  console.log(req.query);
+  login.isUserExist(user, function(re) {
+    if (re==true) {
+      var result = {result: false, error: "User has exist!"};
+      res.send(JSON.stringify(result));
+    } else {
+      login.regUser(user, password, function(valid) {
+        if (valid == true) {
+          req.session.sign = true;
+          req.session.name = req.body.user;
+      
+          var result = {result: true};
+          console.log(result);
+          res.send(JSON.stringify(result));
+        } else {
+          var result = {result: false, error: "Write to db failed!"};
+          console.log(result);
+          res.send(JSON.stringify(result));
+        }
+      });
+    }
+  });
+  
+});
+app.get('/app_diagramlist', function(req, res) {
+  console.log('get /app_diagramlist');
+
+  if (!req.session.sign) {
+    var result = {result: false, error: "Session is invalid!", list: []};
+    console.log(result);
+    res.send(JSON.stringify(result));
+    return ;
+  } 
+  diagrams.getDiagramList(req.session.name, function(diagram_list) {
+    var result = {result: true, list: diagram_list};
+    console.log(result);
+    res.send(JSON.stringify(result));
+  });
+});
+app.get('/app_newdiagram', function(req, res) {
+  console.log('get /app_newdiagram');
+  var title = req.query.title;
+
+  if (!req.session.sign) {
+    var result = {result: false, error: "Session is invalid!"};
+    console.log(result);
+    res.send(JSON.stringify(result));
+    return ;
+  } 
+  diagrams.newdiagram(req.session.name, title, function(id) {
+    if (id == -1) {
+      var result = {result: false, error: "cannot create diagram!"};
+      console.log(result);
+      res.send(JSON.stringify(result));
+    } else {
+      var result = {result: true, error: "", id: id};
+      console.log(result);
+      res.send(JSON.stringify(result));
+    }
+  });
+});
+app.get('/app_deldiagram', function(req, res) {
+  console.log('get /app_deldiagram');
+  var id = req.query.id;
+
+  if (!req.session.sign) {
+    var result = {result: false, error: "Session is invalid!"};
+    console.log(result);
+    res.send(JSON.stringify(result));
+    return ;
+  } 
+  diagrams.deldiagram(req.session.name, id, function(result) {
+    if (result == false) {
+      var result = {result: false, error: "cannot delete diagram!"};
+      console.log(result);
+      res.send(JSON.stringify(result));
+    } else {
+      var result = {result: true, error: ""};
+      console.log(result);
+      res.send(JSON.stringify(result));
+    }
+  });
+});
+
 
 
 var server = app.listen(3000, function () {
