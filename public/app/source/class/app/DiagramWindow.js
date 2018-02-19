@@ -30,7 +30,7 @@ qx.Class.define("app.DiagramWindow", {
       });
 
       // elastic
-      frame.setSource("http://localhost:3000/editdiagram?ID="+id);
+      frame.setSource("/editdiagram?ID="+id);
     }
 });
 
