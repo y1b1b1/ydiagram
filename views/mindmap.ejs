@@ -38,6 +38,7 @@
 
     
     // a node consists of some text with a line shape underneath
+    /*
     myDiagram.nodeTemplate =
       $(go.Node, "Vertical",
         
@@ -67,6 +68,43 @@
           // make sure links come in from the proper direction and go out appropriately
           new go.Binding("fromSpot", "dir", function(d) { return spotConverter(d, true); }),
           new go.Binding("toSpot", "dir", function(d) { return spotConverter(d, false); })),
+        $("TreeExpanderButton", {
+            
+            
+          }),
+        // remember the locations of each node in the node data
+        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+        // make sure text "grows" in the desired direction
+        new go.Binding("locationSpot", "dir", function(d) { return spotConverter(d, false); })
+      );
+      */
+      myDiagram.nodeTemplate =
+      $(go.Node, "Vertical",
+        { selectionObjectName: "TEXT" },
+        $(go.TextBlock,
+          {
+            name: "TEXT",
+            minSize: new go.Size(30, 15),
+            font: "bold 15px Helvetica, bold Arial, sans-serif",
+            editable: true
+          },
+          // remember not only the text string but the scale and the font in the node data
+          new go.Binding("text", "text").makeTwoWay(),
+          new go.Binding("scale", "scale").makeTwoWay(),
+          new go.Binding("font", "font").makeTwoWay()),
+        $(go.Shape, "LineH",
+          {
+            name: "LineH",
+            stretch: go.GraphObject.Horizontal,
+            strokeWidth: 3, height: 3,
+            // this line shape is the port -- what links connect with
+            portId: "", fromSpot: go.Spot.LeftRightSides, toSpot: go.Spot.LeftRightSides
+          },
+          new go.Binding("stroke", "brush").makeTwoWay(),
+          // make sure links come in from the proper direction and go out appropriately
+          new go.Binding("fromSpot", "dir", function(d) { return spotConverter(d, true); }),
+          new go.Binding("toSpot", "dir", function(d) { return spotConverter(d, false); })),
+          $("TreeExpanderButton"),
         // remember the locations of each node in the node data
         new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
         // make sure text "grows" in the desired direction
@@ -112,17 +150,20 @@
     myDiagram.nodeTemplate.contextMenu =
       $(go.Adornment, "Vertical",
         $("ContextMenuButton",
-          $(go.TextBlock, "Bigger"),
+          $(go.TextBlock, "Bigger" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
           { click: function(e, obj) { changeTextSize(obj, 1.1); } }),
         $("ContextMenuButton",
-          $(go.TextBlock, "Smaller"),
+          $(go.TextBlock, "Smaller" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
           { click: function(e, obj) { changeTextSize(obj, 1/1.1); } }),
         $("ContextMenuButton",
-          $(go.TextBlock, "Bold/Normal"),
+          $(go.TextBlock, "Change Color" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
+          { click: function(e, obj) { changeColor(obj, "brown"); } }),
+        $("ContextMenuButton",
+          $(go.TextBlock, "Bold/Normal" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
           { click: function(e, obj) { toggleTextWeight(obj); } }),
         $("ContextMenuButton",
-          $(go.TextBlock, "Layout"),
-          {
+          $(go.TextBlock, "Layout" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
+          { 
             click: function(e, obj) {
                 var adorn = obj.part;
                 adorn.diagram.startTransaction("Subtree Layout");
@@ -156,16 +197,19 @@
     myDiagram.contextMenu =
       $(go.Adornment, "Vertical",
         $("ContextMenuButton",
-          $(go.TextBlock, "Undo"),
+          $(go.TextBlock, "Undo" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
           { click: function(e, obj) { e.diagram.commandHandler.undo(); } },
           new go.Binding("visible", "", function(o) { return o.diagram && o.diagram.commandHandler.canUndo(); }).ofObject()),
         $("ContextMenuButton",
-          $(go.TextBlock, "Redo"),
+          $(go.TextBlock, "Redo" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}) ,
           { click: function(e, obj) { e.diagram.commandHandler.redo(); } },
           new go.Binding("visible", "", function(o) { return o.diagram && o.diagram.commandHandler.canRedo(); }).ofObject()),
         $("ContextMenuButton",
-          $(go.TextBlock, "Save"),
-          { click: function(e, obj) { save(); } })
+          $(go.TextBlock, "Save" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
+          { click: function(e, obj) { save(); } }),
+        $("ContextMenuButton",
+          $(go.TextBlock, "Layout" ,{font: "bold 17px Helvetica, bold Arial, sans-serif"}),
+          { click: function(e, obj) { layoutAll(); } })
       );
 
     myDiagram.addDiagramListener("SelectionMoved", function(e) {
@@ -201,6 +245,24 @@
     var tb = node.findObject("TEXT");
     tb.scale *= factor;
     adorn.diagram.commitTransaction("Change Text Size");
+  }
+
+  function changeColor(obj, color) {
+    var adorn = obj.part;
+    var colors = [ "lightgreen", "Aqua","Blue","BlueViolet","Brown","Chartreuse","Crimson","DarkGreen","DarkMagenta","DarkRed","DarkViolet","DeepPink","FireBrick","ForestGreen","Fuchsia","Gold","GreenYellow","Green","LawnGreen","Magenta","Lime","Maroon","MediumBlue","MediumSpringGreen","OrangeRed","Purple","Red","Yellow"];
+    adorn.diagram.startTransaction("Change Node Color");
+    var node = adorn.adornedPart;
+    var tb = node.findObject("LineH");
+    // assume "bold" is at the start of the font specifier
+    //alert(tb.stroke);
+    for (var i=0; i<colors.length; i++) {
+      if (colors[i] == tb.stroke) {
+        var t = (i+1)%colors.length;
+        color = colors[t];
+      }
+    }
+    tb.stroke = color;
+    adorn.diagram.commitTransaction("Change Node Color");
   }
 
   function toggleTextWeight(obj) {
