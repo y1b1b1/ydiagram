@@ -296,6 +296,9 @@
         model:myDiagram.model.toJson()
       },
       function(data,status){
+        if (data != "0") {
+          alert("Save fail!");
+        }
         //alert("Data: " + data + "\nStatus: " + status);
       });
   } 

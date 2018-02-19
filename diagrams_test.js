@@ -34,7 +34,7 @@ TestCases.push(getDiagramList);
 
 // 获取模型数据
 function getmodel(callback) {
-  diagrams.getmodel(new_id,  function(model) {
+  diagrams.getmodel('bobo', new_id,  function(model) {
     console.log(model);
     callback(null, 'getmodel');
   });
@@ -44,7 +44,7 @@ TestCases.push(getmodel);
 // 修改模型数据
 function savemodel(callback) {
   var model = { "class": "go.TreeModel", "nodeDataArray": [ {"key":0, "text":"Mind Map222", "loc":"0 0", brush: "lightgreen"}]};
-  diagrams.savemodel(new_id, JSON.stringify(model), function(result) {
+  diagrams.savemodel('bobo', new_id, JSON.stringify(model), function(result) {
     console.log("Savemodel:"+result);
     callback(null, 'savemodel');
   });

@@ -62,7 +62,9 @@ app.get('/editdiagram', function(req, res) {
   // 获取对应设计的数据信息
   // 展示流图信息
   // res.send("edit .... " + req.query.ID);
-  
+  console.log('get /editdiagram');
+  console.log(req.headers.cookie);
+  console.log(req.session.name);
   res.render('mindmap.ejs', {ID: req.query.ID});
 });
 app.get('/deldiagram', function(req, res) {
@@ -95,12 +97,15 @@ app.post('/do_newdiagram', function(req, res) {
 
 
 app.get('/GetDiagramModel', function(req, res) {
-  diagrams.getmodel(req.query.ID, function(model) {
+  console.log('/GetDiagramModel');
+  console.log(req.headers.cookie);
+  console.log(req.session.name);
+  diagrams.getmodel(req.session.name, req.query.ID, function(model) {
     res.send(model);
   });
 });
 app.post('/SaveDiagramModel', function(req, res) {
-  diagrams.savemodel(req.body.id, req.body.model, function(result) {
+  diagrams.savemodel(req.session.name, req.body.id, req.body.model, function(result) {
     if (result == false) {
       res.send('1');
     } else {
@@ -120,8 +125,8 @@ app.get('/app_login', function(req, res) {
   login.isValidUser(user, password, function(valid) {
     if (valid == true) {
       req.session.sign = true;
-      req.session.name = req.body.user;
-      
+      req.session.name = req.query.user;
+
       var result = {result: true};
       console.log(result);
       res.send(JSON.stringify(result));
@@ -163,6 +168,8 @@ app.get('/app_signup', function(req, res) {
 });
 app.get('/app_diagramlist', function(req, res) {
   console.log('get /app_diagramlist');
+  console.log(req.headers.cookie);
+  console.log(req.session.name);
 
   if (!req.session.sign) {
     var result = {result: false, error: "Session is invalid!", list: []};

@@ -74,38 +74,68 @@ function deldiagram(user, id, callback) {
     }
   });
 }
-function getmodel(id, callback) {
-  var sql = 'SELECT content FROM diagrams WHERE diagramid=' + id;
+function getmodel(user, id, callback) {
+  console.log(user);
+  if (typeof(user) == "undefined") {
+    user = "xxxxxxxxxxxx";
+  }
+  var sql = 'SELECT user FROM udiagrams WHERE user="'+user+'" AND diagramid='+id;
   console.log(sql);
   db.QuerySql(sql, function(err, result) {
+    console.log(result);
     if (err) {
       console.log(err);
       callback(JSON.stringify(model));
+    } else if (result.length==0) {
+      callback(JSON.stringify(model));
     } else {
-      console.log(result);
-      if (result.length>0) {
-        callback(result[0]['content']);
-      } else {
-        callback(JSON.stringify(model));
-      }
+      var sql = 'SELECT content FROM diagrams WHERE diagramid=' + id;
+      console.log(sql);
+      db.QuerySql(sql, function(err, result) {
+        if (err) {
+          console.log(err);
+          callback(JSON.stringify(model));
+        } else {
+          console.log(result);
+          if (result.length>0) {
+            callback(result[0]['content']);
+          } else {
+            callback(JSON.stringify(model));
+          }
+        }
+      });
     }
   });
 }
-function savemodel(id, model_new, callback) {
-  var sql = 'UPDATE diagrams SET content=\'' + model_new + '\' WHERE diagramid=' + id;
-  console.log(sql);
+function savemodel(user, id, model_new, callback) {
+  if (typeof(user) == "undefined") {
+    user = "xxxxxxxxxxxx";
+  }
+  var sql = 'SELECT user FROM udiagrams WHERE user="'+user+'" AND diagramid='+id;
   db.QuerySql(sql, function(err, result) {
-    console.log("Save model finish!");
     if (err) {
       console.log(err);
       callback(false);
+    } else if (result.length==0) {
+      callback(false);
     } else {
-      callback(true);
+      var sql = 'UPDATE diagrams SET content=\'' + model_new + '\' WHERE diagramid=' + id;
+      console.log(sql);
+      db.QuerySql(sql, function(err, result) {
+        console.log("Save model finish!");
+        if (err) {
+          console.log(err);
+          callback(false);
+        } else {
+          callback(true);
+        }
+      });
     }
   });
 }
 function getDiagramList(user, callback) {
   var sql = 'SELECT diagrams.diagramid AS diagramid, diagrams.title AS title FROM udiagrams, diagrams WHERE udiagrams.user="' + user + '" AND diagrams.diagramid=udiagrams.diagramid';
+  console.log(sql);
 
   var list = [];
   db.QuerySql(sql, function(err, result) {
