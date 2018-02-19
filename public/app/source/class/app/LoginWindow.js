@@ -52,6 +52,10 @@ qx.Class.define("app.LoginWindow", {
 
       this.add(container, {row: 3, column: 1});      
 
+      var  error_msg = new qx.ui.basic.Label("错误消息");
+      //error_msg.set({ color: "red" });
+
+
       // Sign In
       //  登录成功发出登录成功消息
       //  登录失败，提示错误描述信息
@@ -67,17 +71,22 @@ qx.Class.define("app.LoginWindow", {
           // response content type, e.g. JSON
           var result = JSON.parse(req.getResponse());
           if (result["result"]==false) {
-            alert(result["error"]);
+            //alert(result["error"]);
+            error_msg.setValue(result["error"]);
+            this.add(error_msg, {row: 4, column: 1});
           } else {
-            alert("Sign in success");
+            //alert("Sign in success");
             this.fireEvent("loginsuccess");
           }
         }, this);
         req.addListener("fail", function(e) {
-          alert("Net Error!");
+          //alert("Net Error!");
+          error_msg.setValue("Net Error!");
+          this.add(error_msg, {row: 4, column: 1});
         }, this);
         req.addListener("error", function(e) {
-          alert("Net Error!");
+          error_msg.setValue("Net Error!");
+          this.add(error_msg, {row: 4, column: 1});
         }, this);
 
         // Send request
@@ -95,7 +104,8 @@ qx.Class.define("app.LoginWindow", {
         var repassword = repassword_input.getValue();
 
         if (password != repassword) {
-          alert("Password inputed are different!");
+          error_msg.setValue("Password inputed are different!");
+          this.add(error_msg, {row: 4, column: 1});
           return ;
         }
 
@@ -108,21 +118,25 @@ qx.Class.define("app.LoginWindow", {
           // response content type, e.g. JSON
           var result = JSON.parse(req.getResponse());
           if (result["result"]==false) {
-            alert(result["error"]);
+            error_msg.setValue(result["error"]);
+            this.add(error_msg, {row: 4, column: 1});
           } else {
-            alert("Sign up success");
+            error_msg.setValue("Sign up success");
+            this.add(error_msg, {row: 4, column: 1});
           }
         }, this);
         req.addListener("fail", function(e) {
-          alert("Net Error!");
+          error_msg.setValue("Net Error!");
+          this.add(error_msg, {row: 4, column: 1});
         }, this);
         req.addListener("error", function(e) {
-          alert("Net Error!");
+          error_msg.setValue("Net Error!");
+          this.add(error_msg, {row: 4, column: 1});
         }, this);
 
         // Send request
         req.send();
-      });
+      }, this);
 
     }
 });

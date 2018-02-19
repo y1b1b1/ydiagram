@@ -14,10 +14,15 @@ qx.Class.define("app.MainWindow", {
       this.setShowClose(false);
       this.setShowMaximize(false);
       this.setShowMinimize(false);
+      //this.setAlwaysOnTop(true);
 
+ 
       // adjust size
       this.setWidth(250);
-      this.setHeight(300);
+      this.setHeight(this._getRoot().getInnerSize().height);
+      //this._getRoot().addListener("changeHeight", function(e){
+      //  this.setHeight(e.getData());
+      //});
 
       // add the layout
       var layout = new qx.ui.layout.Grid(0, 0);
