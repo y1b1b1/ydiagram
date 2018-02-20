@@ -31,23 +31,25 @@
       if (text_v == "none") {
         return ;
       }
+      //alert($('#clientd').text());
       $('#clientd').text("none");
       var txt = text_v.split('$$$');
       var commands = txt[0];
-
-      //if (commands != "none") {
-      //  alert($('#clientd').text());
-      //}
 
       switch (commands) {
         case 'save':
           save();
           break;
         case 'brush':
+          var i = 0;
           myDiagram.selection.each(function(node) {
+            i++;
             var tb = node.findObject("LineH");
             tb.stroke = txt[1];
           });
+          if (i==0) {
+            alert("You haven't select any items!");
+          }
           break;
       }
     }, 100);  

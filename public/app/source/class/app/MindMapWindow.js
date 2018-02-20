@@ -42,10 +42,16 @@ qx.Class.define("app.MindMapWindow", {
 
         var mypop = new qx.ui.control.ColorPopup();
         mypop.exclude();
-        mypop.setValue("#23F3C1");
+        mypop.setValue("#FFFFFF");
 
         mypop.addListener("changeValue", function(e) {
+            if (e.getData() == "#FFFFFF") {
+                return ;
+            }
+            
+            //alert(frame.getBody().getElementsByClassName("clientd")[0].innerHTML);
             frame.getBody().getElementsByClassName("clientd")[0].innerHTML = "brush$$$"+e.getData();
+            mypop.setValue("#FFFFFF");
         });
     
 
