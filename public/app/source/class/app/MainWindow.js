@@ -16,7 +16,6 @@ qx.Class.define("app.MainWindow", {
       this.setShowMinimize(false);
       //this.setAlwaysOnTop(true);
 
- 
       // adjust size
       this.setWidth(250);
       this.setHeight(this._getRoot().getInnerSize().height);
@@ -77,7 +76,7 @@ qx.Class.define("app.MainWindow", {
 
         var item = controller.getSelection().getItem(0);
         //alert(item["$$user_id"]);
-        var editWindow = new app.DiagramWindow(item["$$user_id"]);
+        var editWindow = new app.MindMapWindow(item["$$user_id"]);
         editWindow.maximize()
         editWindow.open();
       });

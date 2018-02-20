@@ -85,5 +85,15 @@
       }
     }
     */
+
+    "common" : {
+      "add-script" : [
+        {
+          "uri" : "resource/test/test.js"
+        }
+      ]
+    }
   }
 }
+
+
