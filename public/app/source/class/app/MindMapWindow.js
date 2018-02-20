@@ -50,6 +50,8 @@ qx.Class.define("app.MindMapWindow", {
     
 
         saveButton.addListener("execute", function(e) {
+            //alert(frame.getBody().getElementsByClassName("clientd")[0].innerHTML);
+            //frame.getBody().getElementsByClassName("clientd")[0].setAttribute("value", "save");
             frame.getBody().getElementsByClassName("clientd")[0].innerHTML = "save";
         });
         brushButton.addListener("execute", function(e) {

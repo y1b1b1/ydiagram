@@ -26,9 +26,18 @@
           "undoManager.isEnabled": true
         });
     
-    $("#clientd").on('DOMNodeInserted',function() {
-      var txt = $('#clientd').text().split('$$$');
+    setInterval(function() {
+      var text_v = $('#clientd').text();
+      if (text_v == "none") {
+        return ;
+      }
+      $('#clientd').text("none");
+      var txt = text_v.split('$$$');
       var commands = txt[0];
+
+      //if (commands != "none") {
+      //  alert($('#clientd').text());
+      //}
 
       switch (commands) {
         case 'save':
@@ -41,7 +50,7 @@
           });
           break;
       }
-    });
+    }, 100);  
     
     // a node consists of some text with a line shape underneath
     /*
