@@ -26,6 +26,37 @@
           "undoManager.isEnabled": true
         });
     
+    myDiagram.commandHandler.doKeyDown = function() {
+      //alert('ss');
+      var e = myDiagram.lastInput;
+      // The meta (Command) key substitutes for "control" for Mac commands
+      var key = e.key;
+      // Quit on any undo/redo key combination:
+      if (key === 'a' || key == 'A') {
+        // 创建新节点
+        var node_sel = 0;
+        myDiagram.selection.each(function(node) {
+          if (node_sel == 0) {
+            node_sel = node;
+          }
+        });
+        if (node_sel != 0) {
+          
+          var olddata = node_sel.data;
+          var newdata = { text: "idea", brush: olddata.brush, dir: olddata.dir, parent: olddata.key };
+         
+          myDiagram.startTransaction("Add Node");
+          myDiagram.model.addNodeData(newdata);
+          layoutAll();
+          myDiagram.commitTransaction("Add Node");
+        }
+        return;
+      }
+
+      // call base method with no arguments (default functionality)
+      go.CommandHandler.prototype.doKeyDown.call(this);
+    };
+    
     setInterval(function() {
       var text_v = $('#clientd').text();
       if (text_v == "none") {
@@ -261,24 +292,6 @@
     adorn.diagram.commitTransaction("Change Text Size");
   }
 
-  function changeColor(obj, color) {
-    var adorn = obj.part;
-    var colors = [ "lightgreen", "Aqua","Blue","BlueViolet","Brown","Chartreuse","Crimson","DarkGreen","DarkMagenta","DarkRed","DarkViolet","DeepPink","FireBrick","ForestGreen","Fuchsia","Gold","GreenYellow","Green","LawnGreen","Magenta","Lime","Maroon","MediumBlue","MediumSpringGreen","OrangeRed","Purple","Red","Yellow"];
-    adorn.diagram.startTransaction("Change Node Color");
-    var node = adorn.adornedPart;
-    var tb = node.findObject("LineH");
-    // assume "bold" is at the start of the font specifier
-    //alert(tb.stroke);
-    for (var i=0; i<colors.length; i++) {
-      if (colors[i] == tb.stroke) {
-        var t = (i+1)%colors.length;
-        color = colors[t];
-      }
-    }
-    tb.stroke = color;
-    adorn.diagram.commitTransaction("Change Node Color");
-  }
-
   function toggleTextWeight(obj) {
     var adorn = obj.part;
     adorn.diagram.startTransaction("Change Text Weight");
@@ -330,8 +343,8 @@
     var layout = go.GraphObject.make(go.TreeLayout,
         { angle: angle,
           arrangement: go.TreeLayout.ArrangementFixedRoots,
-          nodeSpacing: 5,
-          layerSpacing: 20,
+          nodeSpacing: 15,
+          layerSpacing: 30,
           setsPortSpot: false, // don't set port spots since we're managing them with our spotConverter function
           setsChildPortSpot: false });
     layout.doLayout(parts);

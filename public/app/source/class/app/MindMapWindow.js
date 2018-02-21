@@ -27,6 +27,7 @@ qx.Class.define("app.MindMapWindow", {
         this.add(toolbar, {row: 0, column: 0});
 
         var frame = new qx.ui.embed.Iframe();
+        frame.setKeepFocus(true);
         this.add(frame, {row: 1, column: 0});
         frame.addListener("load", function(e) {
             this.debug("Loaded: " + this.getSource());

@@ -15,5 +15,8 @@ function QuerySql(sql, callback) {
   connection.query(sql,callback);
 }
 
+setInterval(function () {
+  connection.query('SELECT 1');
+}, 10000);
 
 exports.QuerySql = QuerySql;
